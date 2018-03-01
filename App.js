@@ -14,7 +14,7 @@ export default class App extends React.Component {
 componentDidMount(){
         Autentication.onAuthStateChanged(function(user) {
             if (user) {
-             Actions.HomeApp();
+             Actions.Screen();
             } 
           });
 

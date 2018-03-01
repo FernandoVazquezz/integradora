@@ -19,4 +19,3 @@ export default class HomeApp extends React.Component {
         return mainScreen
     }
 }
-
