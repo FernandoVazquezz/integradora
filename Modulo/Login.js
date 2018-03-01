@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, View, Image, TouchableWithoutFeedback
 ,StatusBar, TextInput, SafeAreaView, Keyboard,
-TouchableOpacity, KeyboardAvoidingView} from 'react-native';
+TouchableOpacity, KeyboardAvoidingView, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Autentication} from './Firebase'
 import { Actions } from 'react-native-router-flux';
@@ -15,9 +15,16 @@ export default class Login extends Component {
  
  
 Autentication.signInWithEmailAndPassword(email, password).then(function(accept) {
-console.warn('welcome');
+
 }).catch(function(error){
-    console.warn(error)
+    Alert.alert(
+            'Incorrecto',
+            String(error),
+            [
+                {text: 'OK', onPress: () => console.log('OK Pressed')}
+            ],
+            { cancelable: false }
+            )
 })
 
  }
@@ -121,5 +128,3 @@ return(
                         //  opacity: 0.5
                 }
         });
-
-

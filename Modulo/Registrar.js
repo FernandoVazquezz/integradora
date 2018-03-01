@@ -1,10 +1,9 @@
 import React from 'react';
 import {StyleSheet, Text, View, Image, TouchableWithoutFeedback
 ,StatusBar, TextInput, SafeAreaView, Keyboard,
-TouchableOpacity, KeyboardAvoidingView} from 'react-native';
+TouchableOpacity, KeyboardAvoidingView, Alert} from 'react-native';
 import {Autentication} from './Firebase';
 import Icon from 'react-native-vector-icons/Ionicons';
-import DropdownAlert from 'react-native-dropdownalert';
 
 export default class Registrar extends React.Component {
     state= {usuario:'', password:''}
@@ -13,9 +12,16 @@ export default class Registrar extends React.Component {
         const email = this.state.usuario;
         const password = this.state.password;
         Autentication.createUserWithEmailAndPassword(email, password).then(function(accept){
-            console.warn(accept); 
+            
         }).catch(function(error) {
-            console.warn(error);
+            Alert.alert(
+            'INCORRECTO',
+            String(error),
+            [
+                {text: 'OK', onPress: () => console.log('OK Pressed')}
+            ],
+            { cancelable: false }
+            )
       });
     }   
         
@@ -126,4 +132,3 @@ export default class Registrar extends React.Component {
                         //  opacity: 0.5
                 }
         });
-
