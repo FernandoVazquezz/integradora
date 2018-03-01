@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, View, Text } from 'react-native';
-import Login from './Modulo/Login';
-import Splash from './Modulo/Splash';
+import Login from './Login';
+import Splash from './Splash';
 import {Scene, Router} from 'react-native-router-flux';
 
 export default class HomeApp extends React.Component {
