@@ -7,13 +7,17 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {TabNavigator} from 'react-navigation';
 
 export default class Registrar extends React.Component {
-    state= {usuario:'', password:''}
+    state= {usuario:'', password:'',email:''}
     
     send = ()=>{
-        const email = this.state.usuario;
+        const usuario = this.state.usuario;
         const password = this.state.password;
+        const email = this.state.email;
         Autentication.createUserWithEmailAndPassword(email, password).then(function(accept){
-            
+        var user = Autentication.currentUser;
+                user.updateProfile({
+                displayName: usuario,
+                })
         }).catch(function(error) {
             Alert.alert(
             'INCORRECTO',
@@ -41,10 +45,19 @@ export default class Registrar extends React.Component {
                 <TextInput style={styles.input}
                    placeholder="Usuario"
                    placeholderTextColor='rgba(255,255,255,0.8)'
-                   keyboardType='email-address'
+                   keyboardType='go'
                    returnKeyType='next'
                    autoCorrect={false}
                    onChangeText={(user)=>this.setState({usuario:user})}
+                   onSubmitEditing={() => this.refs.txtPassword.focus()}
+                />
+                <TextInput style={styles.input}
+                   placeholder="Email"
+                   placeholderTextColor='rgba(255,255,255,0.8)'
+                   keyboardType='email-address'
+                   returnKeyType='next'
+                   autoCorrect={false}
+                   onChangeText={(email)=>this.setState({email:email})}
                    onSubmitEditing={() => this.refs.txtPassword.focus()}
                 />
                 <TextInput style={styles.input}
@@ -56,15 +69,7 @@ export default class Registrar extends React.Component {
                    onChangeText={(pass)=>this.setState({password:pass})}
                    ref={"txtPassword"}
                 />
-                <TextInput style={styles.input}
-                   placeholder="Contraseña"   
-                   placeholderTextColor='rgba(255,255,255,0.8)'
-                   returnKeyType='go' 
-                   secureTextEntry
-                   autoCorrect={false}
-                   onChangeText={(pass)=>this.setState({password:pass})}
-                   ref={"txtPassword"}
-                />
+                
                  
                 <TouchableOpacity style={styles.buttonContainer} onPress={this.send}>
                     <Text style={styles.buttonText}>Registrar</Text>
