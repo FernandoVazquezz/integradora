@@ -5,7 +5,6 @@ TouchableOpacity, KeyboardAvoidingView, Alert,Modal,ScrollView} from 'react-nati
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Autentication , firebaseDatabase} from './Firebase'
 import { Actions } from 'react-native-router-flux';
-import {TabNavigator} from 'react-navigation';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import ImageZoom from 'react-native-image-pan-zoom';
 
