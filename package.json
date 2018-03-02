@@ -27,9 +27,11 @@
     "react-native-animatable": "^1.2.4",
     "react-native-dropdownalert": "^3.3.0",
     "react-native-material-bottom-navigation": "^0.8.2",
+    "react-native-material-design-searchbar": "^1.8.0",
     "react-native-progress": "^3.4.0",
     "react-native-router-flux": "^4.0.0-beta.28",
     "react-native-search-bar": "^3.4.0",
+    "react-native-selectablesectionlistview": "^0.4.0",
     "react-native-swipeable-parallax-carousel": "^1.1.0",
     "react-native-vector-icons": "^4.5.0",
     "react-navigation": "^1.2.1"
