@@ -8,6 +8,7 @@ import { Actions } from 'react-native-router-flux';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import ImageZoom from 'react-native-image-pan-zoom';
 
+
 const images = [{
         
     url: 'https://cloud.educaplay.com/recursos/91/2937625/imagen_1_1492385898.png'
