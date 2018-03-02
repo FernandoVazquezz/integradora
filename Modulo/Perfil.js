@@ -1,24 +1,35 @@
 import React from 'react';
-import {StyleSheet, Text, View, Image, TouchableWithoutFeedback
+import {StyleSheet, Text, View, Image, Dimensions , TouchableWithoutFeedback
 ,StatusBar, TextInput, SafeAreaView, Keyboard,
-TouchableOpacity, KeyboardAvoidingView, Alert} from 'react-native';
+TouchableOpacity, KeyboardAvoidingView, Alert,Modal,ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Autentication , firebaseDatabase} from './Firebase'
 import { Actions } from 'react-native-router-flux';
 import {TabNavigator} from 'react-navigation';
+import ImageViewer from 'react-native-image-zoom-viewer';
+import ImageZoom from 'react-native-image-pan-zoom';
 
-class Perfil extends React.Component {
-    state = {name:''}    
+const images = [{
+        
+    url: 'https://cloud.educaplay.com/recursos/91/2937625/imagen_1_1492385898.png'
+}, {
+    url: 'https://cloud.educaplay.com/recursos/91/2937625/imagen_1_1492385898.png'
+}, {
+    url: 'https://cloud.educaplay.com/recursos/91/2937625/imagen_1_1492385898.png'
+}]
+    class Perfil extends React.Component {
+     state = {name:'' ,modalVisible: false,}  
     
+    setModalVisible(visible) {
+        this.setState({modalVisible: visible});
+      }
+  
     componentDidMount() {
         var user = Autentication.currentUser;
         name = user.displayName;
         this.setState({name: name});     
     }
     
-    send = ()=>{
-        
-    }
     
   static navigationOptions = {
     tabBarIcon: () => <Icon size={24} name="face" color="white" />
@@ -26,13 +37,12 @@ class Perfil extends React.Component {
     
 
 
-
 render() {
 return(
        
-<SafeAreaView style={styles.container}>
-    <StatusBar barStyle="light-content"/>
+<SafeAreaView style={styles.container}>   
     <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
+    
         <View style={styles.logoContainer}>
             <View style={styles.logoContainer}>
                 <TouchableOpacity onPress={this.send}>
@@ -42,20 +52,28 @@ return(
             </View>
             <KeyboardAvoidingView behavior='padding' style={styles.container}>
                 <View style={styles.infoContainer}>
-                 
-                <View style={styles.perfilMedio}>
-        
-                </View>
-                <View style={styles.perfilMedio}>
-        
-                </View>
-                <View style={styles.perfilMedio}>
-        
-                </View>
-                  
+          
+           <Modal visible={this.state.modalVisible} 
+                  transparent={false} 
+                  onRequestClose={() => this.setState({modalVisible: false})}>
+                <ImageViewer imageUrls={images}/>
+            </Modal>
+          
+                <TouchableOpacity onPress={() => { this.setModalVisible(true);}}>
+                <Image source={require('./imagenicon.png')} style={styles.perfilMedio}  />
+                </TouchableOpacity>   
+                
+                <TouchableOpacity onPress={() => { this.setModalVisible(true);}}>
+                <Image source={require('./imagenicon.png')} style={styles.perfilMedio}  />
+                </TouchableOpacity>
+               
+                <TouchableOpacity onPress={() => { this.setModalVisible(true);}}>
+                <Image source={require('./imagenicon.png')} style={styles.perfilMedio}  />
+                </TouchableOpacity> 
                 </View>
             </KeyboardAvoidingView>
         </View> 
+        
     </TouchableWithoutFeedback> 
 </SafeAreaView>
 );}};
