@@ -1,15 +1,16 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {StyleSheet, Text, View, Image, TouchableWithoutFeedback
 ,StatusBar, TextInput, SafeAreaView, Keyboard,
 TouchableOpacity, KeyboardAvoidingView, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Autentication} from './Firebase'
 import { Actions } from 'react-native-router-flux';
+import {TabNavigator} from 'react-navigation';
 
-export default class Login extends Component {
+export default class Login extends React.Component {
  state={usuario:'',password:''}
-  
- Autenticar=()=>{
+ 
+Autenticar=()=>{
  const email= this.state.usuario;
  const password = this.state.password;
  
@@ -24,8 +25,8 @@ Autentication.signInWithEmailAndPassword(email, password).then(function(accept) 
                 {text: 'OK', onPress: () => console.log('OK Pressed')}
             ],
             { cancelable: false }
-            )
-})
+            );
+});
 
  }
 render() {
@@ -69,9 +70,9 @@ return(
         </View> 
     </TouchableWithoutFeedback> 
 </SafeAreaView>
-)}}
+);}};
 
-        const styles = StyleSheet.create({
+const styles = StyleSheet.create({
         container: {
         flex: 1,
                 backgroundColor: 'rgb(32,53,70)',

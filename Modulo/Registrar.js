@@ -4,6 +4,7 @@ import {StyleSheet, Text, View, Image, TouchableWithoutFeedback
 TouchableOpacity, KeyboardAvoidingView, Alert} from 'react-native';
 import {Autentication} from './Firebase';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {TabNavigator} from 'react-navigation';
 
 export default class Registrar extends React.Component {
     state= {usuario:'', password:''}
@@ -75,8 +76,9 @@ export default class Registrar extends React.Component {
 </SafeAreaView>
         );
     }
-}
- const styles = StyleSheet.create({
+};
+
+const styles = StyleSheet.create({
         container: {
         flex: 1,
                 backgroundColor: 'rgb(32,53,70)',
