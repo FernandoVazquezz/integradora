@@ -2,14 +2,14 @@ import React from 'react';
 import {StyleSheet, Text, View, Image, TouchableWithoutFeedback
 ,StatusBar, TextInput, SafeAreaView, Keyboard,
 TouchableOpacity, KeyboardAvoidingView, Alert} from 'react-native';
-import {Autentication} from './Firebase';
+import {Autentication,firebaseDatabase} from './Firebase';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {TabNavigator} from 'react-navigation';
 
 export default class Registrar extends React.Component {
     state= {usuario:'', password:'',email:''}
     
-    send = ()=>{
+  send = ()=>{
         const usuario = this.state.usuario;
         const password = this.state.password;
         const email = this.state.email;
@@ -18,6 +18,14 @@ export default class Registrar extends React.Component {
                 user.updateProfile({
                 displayName: usuario,
                 })
+                
+        const idUsuario = user.uid;
+        let nuevoUser = firebaseDatabase.ref('usuarios/' + idUsuario);
+        nuevoUser.set({
+        countProducts:0
+        });
+        
+        
         }).catch(function(error) {
             Alert.alert(
             'INCORRECTO',
@@ -28,7 +36,8 @@ export default class Registrar extends React.Component {
             { cancelable: false }
             )
       });
-    }   
+    }      
+
         
         render() {    
         return (

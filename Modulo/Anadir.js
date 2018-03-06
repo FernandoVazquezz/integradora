@@ -1,9 +1,26 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Text, Image, TextInput, TouchableOpacity, Keyboard } from 'react-native';
 import {TabNavigator} from 'react-navigation';
+import {firebaseDatabase,Autentication} from './Firebase';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class Anadir extends Component {
+    state= {Titulo:'', Marca:'', Categorias:'',Descripción:'', Precio:'',Venta:true,countArticulos:0}
+    
+    send = ()=>{
+        var user = Autentication.currentUser;    
+        const idUsuario = user.uid;    
+        let titulo = firebaseDatabase.ref('usuarios/'+idUsuario+'/productos/');
+        let comments2 =titulo.push();
+        comments2.set({ 
+        Titulo: this.state.Titulo,
+        Marca: this.state.Marca,
+        Categorias: this.state.Categorias,
+        Descripción: this.state.Descripción,
+        Precio: this.state.Precio,
+        Venta: this.state.Venta
+        });
+    }
 
     static navigationOptions = {
     tabBarIcon: () => <Icon size={24} name="add" color="white" />
@@ -16,30 +33,35 @@ class Anadir extends Component {
                        placeholder="Titulo"
                        placeholderTextColor='rgba(255,255,255,0.8)'
                        autoCorrect={false}
-		       underlineColorAndroid='transparent'
+                       underlineColorAndroid='transparent'
+                       onChangeText={(text)=>this.setState({Titulo:text})}
                     />
                     <TextInput style={styles.input}
                        placeholder="Marca"
                        placeholderTextColor='rgba(255,255,255,0.8)'
                        autoCorrect={false}
-		       underlineColorAndroid='transparent'
+                       underlineColorAndroid='transparent'
+                       onChangeText={(text)=>this.setState({Marca:text})}
                     />
                     <TextInput style={styles.input}
                        placeholder="Categorias"
                        placeholderTextColor='rgba(255,255,255,0.8)'
                        autoCorrect={false}
-		       underlineColorAndroid='transparent'
+                       underlineColorAndroid='transparent'
+                       onChangeText={(text)=>this.setState({Categorias:text})}
                     />
                     <TextInput style={styles.input}
                        placeholder="Descripción"   
                        placeholderTextColor='rgba(255,255,255,0.8)'
-		       underlineColorAndroid='transparent'
+                       underlineColorAndroid='transparent'
+                       onChangeText={(text)=>this.setState({Descripción:text})}
                     />
                     <TextInput style={styles.input}
                        placeholder="Precio"   
                        placeholderTextColor='rgba(255,255,255,0.8)'
                        keyboardType='numeric'
-		       underlineColorAndroid='transparent'
+                       underlineColorAndroid='transparent'
+                       onChangeText={(text)=>this.setState({Precio:text})}
                     />
                     <View style={styles.image}>
                         <View style={styles.cameras}>
@@ -52,7 +74,7 @@ class Anadir extends Component {
                             <Icon size={90} name="camera-alt" color="white" />
                         </View>
                     </View>
-                    <TouchableOpacity style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.buttonContainer} onPress={this.send}>
                         <Text style={styles.buttonText}>Publicar</Text>
                     </TouchableOpacity>
                 </View>

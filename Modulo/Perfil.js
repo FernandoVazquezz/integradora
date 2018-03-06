@@ -7,18 +7,16 @@ import {Autentication , firebaseDatabase} from './Firebase'
 import { Actions } from 'react-native-router-flux';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import ImageZoom from 'react-native-image-pan-zoom';
-
-
 const images = [{
-        
     url: 'https://cloud.educaplay.com/recursos/91/2937625/imagen_1_1492385898.png'
 }, {
     url: 'https://cloud.educaplay.com/recursos/91/2937625/imagen_1_1492385898.png'
 }, {
     url: 'https://cloud.educaplay.com/recursos/91/2937625/imagen_1_1492385898.png'
 }]
-    class Perfil extends React.Component {
-     state = {name:'' ,modalVisible: false,}  
+class Perfil extends React.Component {
+
+state = {name:'',modalVisible: false,vendidos:0,venta:0,comprados:0}  
     
     setModalVisible(visible) {
         this.setState({modalVisible: visible});
@@ -27,10 +25,24 @@ const images = [{
     componentDidMount() {
         var user = Autentication.currentUser;
         name = user.displayName;
-        this.setState({name: name});     
+        id= user.uid;
+        this.setState({name: name});
+        
+        let usuario = firebaseDatabase.ref('usuario/' + id);
+        usuario.on('value', snapshot => {
+            
+            const usuario = snapshot.val();
+
+            if (usuario) {
+                this.setState({
+                    vendidos: usuario.Vendidos,
+                    comprados: usuario.Comprados,
+                    venta: usuario.Venta,
+                })
+            }
+        })
     }
-    
-    
+   
   static navigationOptions = {
     tabBarIcon: () => <Icon size={24} name="face" color="white" />
     }
@@ -61,15 +73,19 @@ return(
           
                 <TouchableOpacity onPress={() => { this.setModalVisible(true);}}>
                 <Image source={require('./imagenicon.png')} style={styles.perfilMedio}  />
+                <Text style={{color: 'white'}}> Vendidos: {this.state.vendidos}</Text>
                 </TouchableOpacity>   
+     
+                <TouchableOpacity onPress={() => { this.setModalVisible(true);}}>
+                <Image source={require('./imagenicon.png')} style={styles.perfilMedio}  />
+                <Text style={{color: 'white'}}> En venta: {this.state.venta}</Text>  
+                </TouchableOpacity>
                 
                 <TouchableOpacity onPress={() => { this.setModalVisible(true);}}>
                 <Image source={require('./imagenicon.png')} style={styles.perfilMedio}  />
-                </TouchableOpacity>
-               
-                <TouchableOpacity onPress={() => { this.setModalVisible(true);}}>
-                <Image source={require('./imagenicon.png')} style={styles.perfilMedio}  />
+                <Text style={{color: 'white'}}> Comprados: {this.state.comprados}</Text>        
                 </TouchableOpacity> 
+                
                 </View>
             </KeyboardAvoidingView>
         </View> 
