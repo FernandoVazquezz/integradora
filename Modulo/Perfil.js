@@ -28,16 +28,14 @@ state = {name:'',modalVisible: false,vendidos:0,venta:0,comprados:0}
         id= user.uid;
         this.setState({name: name});
         
-        let usuario = firebaseDatabase.ref('usuario/' + id);
-        usuario.on('value', snapshot => {
-            
+        var ref = firebaseDatabase.ref('usuarios/'+id+'/countProducts');
+        ref.on('value', snapshot => {
+     
             const usuario = snapshot.val();
 
             if (usuario) {
                 this.setState({
-                    vendidos: usuario.Vendidos,
-                    comprados: usuario.Comprados,
-                    venta: usuario.Venta,
+                    venta: usuario.countProducts
                 })
             }
         })
@@ -162,6 +160,3 @@ const styles = StyleSheet.create({
         });
 
 export default Perfil;
-
-
-

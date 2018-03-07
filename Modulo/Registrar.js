@@ -20,7 +20,7 @@ export default class Registrar extends React.Component {
                 })
                 
         const idUsuario = user.uid;
-        let nuevoUser = firebaseDatabase.ref('usuarios/' + idUsuario);
+        let nuevoUser = firebaseDatabase.ref('usuarios/' + idUsuario+'/countProducts');
         nuevoUser.set({
         countProducts:0
         });

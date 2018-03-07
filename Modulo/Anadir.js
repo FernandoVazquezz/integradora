@@ -5,11 +5,29 @@ import {firebaseDatabase,Autentication} from './Firebase';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class Anadir extends Component {
-    state= {Titulo:'', Marca:'', Categorias:'',Descripción:'', Precio:'',Venta:true,countArticulos:0}
+    state= {Titulo:'', Marca:'', Categorias:'',Descripción:'', Precio:'',Venta:true,countArticulos:1}
     
-    send = ()=>{
+   
+   
+    send = ()=>{    
+         var user = Autentication.currentUser;    
+      const idUsuario = user.uid;
+      var refe = firebaseDatabase.ref('usuarios/'+idUsuario+'/countProducts/countProducts');
+        refe.on("value", function(snapshot) {
+        const countArticulos=snapshot.val();
+        (countArticulos)=>this.setState({countArticulos:countArticulos});
+        }, function (errorObject) {
+        console.log("The read failed: " + errorObject.code);
+        });
+        
+        const countArticulo= this.state.countArticulos;
+        const countArticulos=countArticulo+1;
+        this.setState({countArticulos:countArticulos});
         var user = Autentication.currentUser;    
-        const idUsuario = user.uid;    
+         
+        var ref = firebaseDatabase.ref('usuarios/'+idUsuario+'/countProducts').set({
+        countProducts: this.state.countArticulos });
+    
         let titulo = firebaseDatabase.ref('usuarios/'+idUsuario+'/productos/');
         let comments2 =titulo.push();
         comments2.set({ 
