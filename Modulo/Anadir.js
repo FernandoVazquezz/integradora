@@ -1,16 +1,45 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, Text, Image, TextInput, TouchableOpacity, Keyboard } from 'react-native';
+import {StyleSheet, View, Text, Image, TextInput, TouchableOpacity, Keyboard, Alert, Picker } from 'react-native';
 import {TabNavigator} from 'react-navigation';
 import {firebaseDatabase,Autentication} from './Firebase';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class Anadir extends Component {
-    state= {Titulo:'', Marca:'', Categorias:'',Descripción:'', Precio:'',Venta:true,countArticulos:1}
-    
-   
+    state= {Titulo:'', Marca:'', Categorias:'',Descripción:'', Precio:'',Venta:true,countArticulos:1, PickerValue:''}
+
    
     send = ()=>{    
-         var user = Autentication.currentUser;    
+        this.verificar();
+    }
+    
+    verificar=()=>{
+        var data = this.state.PickerValue;
+        if(data==""){
+            alert("Seleccione Categoria");
+        }else if(this.state.Titulo==""){
+            alert("Falta Titulo");
+        }else if(this.state.Marca==""){
+            alert("Falta Marca");
+        }else if(this.state.Descripción==""){
+            alert("Falta Descripción");
+        }else if(this.state.Precio==""){
+            alert("Falta Precio");
+        }else{
+            this.añadirContadorBD();
+            this.añadirDatosBD();
+            Alert.alert(
+                'EXITOSO',
+                String('Articulo Publicado'),
+                [
+                    {text: 'OK', onPress: () => console.log('OK Pressed')}
+                ],
+                { cancelable: false }
+            );
+        }
+    }
+    
+    añadirContadorBD = () =>{
+        var user = Autentication.currentUser;    
       const idUsuario = user.uid;
       var refe = firebaseDatabase.ref('usuarios/'+idUsuario+'/countProducts/countProducts');
         refe.on("value", function(snapshot) {
@@ -22,18 +51,21 @@ class Anadir extends Component {
         
         const countArticulo= this.state.countArticulos;
         const countArticulos=countArticulo+1;
-        this.setState({countArticulos:countArticulos});
-        var user = Autentication.currentUser;    
+        this.setState({countArticulos:countArticulos});  
          
         var ref = firebaseDatabase.ref('usuarios/'+idUsuario+'/countProducts').set({
         countProducts: this.state.countArticulos });
+    }
     
+    añadirDatosBD = () => {
+        var user = Autentication.currentUser; 
+        const idUsuario = user.uid;
         let titulo = firebaseDatabase.ref('usuarios/'+idUsuario+'/productos/');
         let comments2 =titulo.push();
         comments2.set({ 
         Titulo: this.state.Titulo,
         Marca: this.state.Marca,
-        Categorias: this.state.Categorias,
+        Categorias: this.state.PickerValue,
         Descripción: this.state.Descripción,
         Precio: this.state.Precio,
         Venta: this.state.Venta
@@ -50,7 +82,6 @@ class Anadir extends Component {
                     <TextInput style={styles.input}
                        placeholder="Titulo"
                        placeholderTextColor='rgba(255,255,255,0.8)'
-                       autoCorrect={false}
                        underlineColorAndroid='transparent'
                        onChangeText={(text)=>this.setState({Titulo:text})}
                     />
@@ -61,18 +92,22 @@ class Anadir extends Component {
                        underlineColorAndroid='transparent'
                        onChangeText={(text)=>this.setState({Marca:text})}
                     />
-                    <TextInput style={styles.input}
-                       placeholder="Categorias"
-                       placeholderTextColor='rgba(255,255,255,0.8)'
-                       autoCorrect={false}
-                       underlineColorAndroid='transparent'
-                       onChangeText={(text)=>this.setState({Categorias:text})}
-                    />
+                    <Picker
+                        style={styles.input}
+                        selectedValue={this.state.PickerValue}
+                        onValueChange={(itemValue, itemIndex) => this.setState({PickerValue:itemValue})}
+                    >
+                        <Picker.item label="Categoria" value=""/>
+                        <Picker.item label="Deportes" value="deportes"/>
+                        <Picker.item label="Ropa" value="ropa"/>
+                        <Picker.item label="Tecnologia" value="tecnologia"/>
+                    </Picker>
                     <TextInput style={styles.input}
                        placeholder="Descripción"   
                        placeholderTextColor='rgba(255,255,255,0.8)'
                        underlineColorAndroid='transparent'
                        onChangeText={(text)=>this.setState({Descripción:text})}
+                       multiline={true}
                     />
                     <TextInput style={styles.input}
                        placeholder="Precio"   
@@ -83,13 +118,19 @@ class Anadir extends Component {
                     />
                     <View style={styles.image}>
                         <View style={styles.cameras}>
+                        <TouchableOpacity>
                             <Icon size={90} name="camera-alt" color="white" />
+                            </TouchableOpacity>
                         </View>
                         <View style={styles.cameras}>
+                        <TouchableOpacity>
                             <Icon size={90} name="camera-alt" color="white" />
+                            </TouchableOpacity>
                         </View>
                         <View style={styles.cameras}>
+                        <TouchableOpacity>
                             <Icon size={90} name="camera-alt" color="white" />
+                            </TouchableOpacity>
                         </View>
                     </View>
                     <TouchableOpacity style={styles.buttonContainer} onPress={this.send}>
