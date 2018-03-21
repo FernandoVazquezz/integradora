@@ -43,8 +43,7 @@ class Anadir extends Component {
       const idUsuario = user.uid;
       var refe = firebaseDatabase.ref('usuarios/'+idUsuario+'/countProducts/countProducts');
         refe.on("value", function(snapshot) {
-        const countArticulos=snapshot.val();
-        (countArticulos)=>this.setState({countArticulos:countArticulos});
+        (countArticulos=snapshot.val())=>this.setState({countArticulos:countArticulos=snapshot.val()});
         }, function (errorObject) {
         console.log("The read failed: " + errorObject.code);
         });

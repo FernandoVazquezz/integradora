@@ -1,27 +1,45 @@
+
 import React from 'react';
-import {StyleSheet, Text, View, Image, Dimensions , TouchableWithoutFeedback
-,StatusBar, TextInput, SafeAreaView, Keyboard,
-TouchableOpacity, KeyboardAvoidingView, Alert,Modal,ScrollView} from 'react-native';
+import { StyleSheet,Alert, Text, Image, TouchableOpacity, View, Dimensions, TextInput, ScrollView,RefreshControl } from 'react-native';
+import { Header } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {Autentication , firebaseDatabase} from './Firebase'
+import {Avatar} from 'react-native-elements';
+import {Autentication, firebaseDatabase} from './Firebase';
 import { Actions } from 'react-native-router-flux';
-import ImageViewer from 'react-native-image-zoom-viewer';
-import ImageZoom from 'react-native-image-pan-zoom';
-const images = [{
-    url: 'https://cloud.educaplay.com/recursos/91/2937625/imagen_1_1492385898.png'
-}, {
-    url: 'https://cloud.educaplay.com/recursos/91/2937625/imagen_1_1492385898.png'
-}, {
-    url: 'https://cloud.educaplay.com/recursos/91/2937625/imagen_1_1492385898.png'
-}]
+import Menu from './Menu';
+
 class Perfil extends React.Component {
 
-state = {name:'',modalVisible: false,vendidos:0,venta:0,comprados:0}  
+  constructor(props) {
+    super(props);
+    this.state = {
+      refreshing: false
+    };
+  }
+
+  _onRefresh() {
+    this.componentDidMount();
+    this.setState({refreshing: false});
+  }
+
+Verificar(){
+   Alert.alert(
+  'Cierre de Sesion',
+  '¿Esta seguro de que quiere cerrar la sesion?',
+  [
+    {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+    {text: 'OK', onPress: () => Autentication.signOut().then(function() {
+      Actions.Login();
+}) }
+  ],
+  { cancelable: false }
+) 
+   
+}
+
+
+    state = {name:'',vendidos:0,venta:0,Correo:''}  
     
-    setModalVisible(visible) {
-        this.setState({modalVisible: visible});
-      }
-  
     componentDidMount() {
         var user = Autentication.currentUser;
         name = user.displayName;
@@ -30,133 +48,171 @@ state = {name:'',modalVisible: false,vendidos:0,venta:0,comprados:0}
         
         var ref = firebaseDatabase.ref('usuarios/'+id+'/countProducts');
         ref.on('value', snapshot => {
+            const usuario = snapshot.val();
+            if (usuario) {
+                this.setState({
+                    venta: usuario.countProducts
+                });
+            }
+        });
+        var ref = firebaseDatabase.ref('usuarios/'+id+'/Datos');
+        ref.on('value', snapshot => {
      
             const usuario = snapshot.val();
 
             if (usuario) {
                 this.setState({
-                    venta: usuario.countProducts
-                })
+                    Correo: usuario.correo
+                });
             }
-        })
-    }
-   
-  static navigationOptions = {
-    tabBarIcon: () => <Icon size={24} name="face" color="white" />
-    }
-    
-
-
-render() {
-return(
-       
-<SafeAreaView style={styles.container}>   
-    <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
-    
-        <View style={styles.logoContainer}>
-            <View style={styles.logoContainer}>
-                <TouchableOpacity onPress={this.send}>
-                    <Image source={require('./usuario.jpg')} style={{width: 170, height: 170}}  />
-                </TouchableOpacity>           
-                <Text style={styles.title}> {this.state.name} </Text>
-            </View>
-            <KeyboardAvoidingView behavior='padding' style={styles.container}>
-                <View style={styles.infoContainer}>
-          
-           <Modal visible={this.state.modalVisible} 
-                  transparent={false} 
-                  onRequestClose={() => this.setState({modalVisible: false})}>
-                <ImageViewer imageUrls={images}/>
-            </Modal>
-          
-                <TouchableOpacity onPress={() => { this.setModalVisible(true);}}>
-                <Image source={require('./imagenicon.png')} style={styles.perfilMedio}  />
-                <Text style={{color: 'white'}}> Vendidos: {this.state.vendidos}</Text>
-                </TouchableOpacity>   
-     
-                <TouchableOpacity onPress={() => { this.setModalVisible(true);}}>
-                <Image source={require('./imagenicon.png')} style={styles.perfilMedio}  />
-                <Text style={{color: 'white'}}> En venta: {this.state.venta}</Text>  
-                </TouchableOpacity>
-                
-                <TouchableOpacity onPress={() => { this.setModalVisible(true);}}>
-                <Image source={require('./imagenicon.png')} style={styles.perfilMedio}  />
-                <Text style={{color: 'white'}}> Comprados: {this.state.comprados}</Text>        
-                </TouchableOpacity> 
-                
-                </View>
-            </KeyboardAvoidingView>
-        </View> 
-        
-    </TouchableWithoutFeedback> 
-</SafeAreaView>
-);}};
-
-const styles = StyleSheet.create({
-        container: {
-        flex: 1,
-                backgroundColor: 'rgb(32,53,70)',
-                flexDirection: 'column'
-        },
-                logoContainer: {
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-                flex: 1
-                },
-                title: {
-                color: 'white',
-                        fontSize: 25,
-                        textAlign: 'center',
-                        marginTop: 10,
-                        marginBottom:10,
-                        //  opacity: 0.5
-                },
-                infoContainer: {
-                // position: 'absolute',
-                        flexDirection: 'row',
-                        flex:1,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        height: 200,
-                        padding: 20,
-                        // backgroundColor: 'red',
-
-                },
-                
-                perfilMedio:{
-                   width:105,
-                   height:105,
-                   marginLeft: 5,
-                   marginRight:5,
-                   backgroundColor: 'gray',
-                },
-                input: {
-                height: 45,
-                        width:350,
-                        backgroundColor: 'rgba(255,255,255,0.2)',
-                        color: '#FFF',
-                        marginBottom:20,
-                        paddingHorizontal: 10
-                },
-                buttonContainer:{
-                backgroundColor:'#f7c744',
-                        paddingVertical:15,
-                        borderRadius:40
-                },
-                buttonText:{
-                textAlign:'center',
-                        color:'rgb(32,53,70)',
-                        fontWeight:'bold',
-                        fontSize:18
-                },
-                register:{
-                color: 'white',
-                        fontSize: 18,
-                        textAlign: 'center',
-                        marginTop: 5,
-                        //  opacity: 0.5
-                }
         });
+    }
+
+    static navigationOptions = {
+        tabBarIcon: () => <Icon size={24} name="face" color="white" />
+    }
+    
+    render() {
+    return (
+        <View style={styles.Container}>
+            <ScrollView
+         refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh.bind(this)}
+          />
+                             }                          
+        >
+            <View style={styles.IconosPer}>
+                <View style={styles.Config}>
+                <TouchableOpacity>
+                    <Icon name='settings' color='#B0BEC5' size={25} onPress={()=>Actions.Modificar()}/>
+                </TouchableOpacity>
+                </View>
+                <View style={styles.Sesion}>
+                <TouchableOpacity>
+                    <Icon name='input' color='#B0BEC5' size={25} onPress={this.Verificar}/>
+                </TouchableOpacity>
+                </View>
+            </View>
+            <View style={styles.Cabeza}>
+                <Avatar
+                xlarge
+                rounded
+                source={{uri: "http://cdn.vogue.es/uploads/images/thumbs/201345/clara_lago_en_7dias_7looks_jueves__952579785_1200x800.jpg"}}
+                activeOpacity={0.7}
+                height={40}
+                widht={40}
+                />
+            </View>
+            <View style={styles.NomInf}>
+                <Text style={styles.nombre}>{this.state.name}</Text>
+                <Text style={styles.info}>{this.state.Correo}</Text>
+            </View>
+            <View style={styles.Estadisticas}>
+                <View style={styles.Izquierda}>
+                    <Text style={styles.text}>EN VENTAS</Text>
+                    <Text style={styles.num}>{this.state.venta}</Text>
+                </View>
+                <View style={styles.Derecha}>
+                    <Text style={styles.text}>VENDIDOS</Text>
+                    <Text style={styles.num}>27</Text>
+                </View>
+            </View>
+            <View style={styles.Estadisticas}>
+                <View style={styles.Izquierda}>
+                    <Text style={styles.text}>EN VENTA</Text>
+                    <Text style={styles.num}>3</Text>
+                </View>
+                <View style={styles.Derecha}>
+                    <Text style={styles.text}>VENDIDOS</Text>
+                    <Text style={styles.num}>27</Text>
+                </View>
+            </View>
+            <View style={styles.Estadisticas}>
+                <View style={styles.Izquierda}>
+                    <Text style={styles.text}>EN VENTA</Text>
+                    <Text style={styles.num}>3</Text>
+                </View>
+                <View style={styles.Derecha}>
+                    <Text style={styles.text}>VENDIDOS</Text>
+                    <Text style={styles.num}>27</Text>
+                </View>
+            </View>
+            <View style={styles.Estadisticas}>
+                <View style={styles.Izquierda}>
+                    <Text style={styles.text}>EN VENTA</Text>
+                    <Text style={styles.num}>3</Text>
+                </View>
+                <View style={styles.Derecha}>
+                    <Text style={styles.text}>VENDIDOS</Text>
+                    <Text style={styles.num}>27</Text>
+                </View>
+            </View>
+            </ScrollView>
+        </View>
+    );
+  }
+};
 
 export default Perfil;
+
+const styles = StyleSheet.create({
+    Container:{
+        flex: 1,
+        backgroundColor: '#fdfcfb'
+    },
+    IconosPer:{
+        height: 30,
+        marginTop: 30,
+        flexDirection: 'row',
+        justifyContent: 'flex-end'
+    },
+    Config:{
+        marginRight: 5
+    },
+    Sesion:{
+        marginRight: 10
+    },
+    Cabeza:{
+        height: 150,
+        marginLeft: 105
+    },
+    NomInf:{
+        height: 50
+    },
+    nombre:{
+        textAlign: 'center',
+        fontSize: 30,
+        marginTop: 15
+    },
+    info:{
+        textAlign: 'center',
+        color: '#B0BEC5'
+    },
+    Estadisticas:{
+        flexDirection: 'row',
+        marginTop: 50
+    },
+    Derecha:{
+        backgroundColor: '#BA68C8',
+        height: 100,
+        width: 180
+    },
+    Izquierda:{
+        backgroundColor: '#4DD0E1',
+        height: 100,
+        width: 180
+    },
+    text:{
+        color: '#FFF',
+        textAlign: 'center',
+        fontSize: 20,
+        paddingTop: 10
+    },
+    num:{
+        color: '#FFF',
+        textAlign: 'center',
+        fontSize: 40
+    }
+});
